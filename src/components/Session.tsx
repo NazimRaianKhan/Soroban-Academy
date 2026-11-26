@@ -22,7 +22,8 @@ export function Session({ lv, quiz, value, resetRods, onRecord, onPass }: Props)
   useEffect(() => { const id = setInterval(() => tick((x) => x + 1), 200); return () => clearInterval(id); }, []);
 
   const describe = (p: Problem) =>
-    p.set ? `${t("setq")} ${p.txt}` : `${p.a} ${t(p.op === "+" ? "plus" : "minus")} ${p.b}`;
+    p.set ? `${t("setq")} ${p.txt}`
+      : p.terms!.map((n, i) => (i ? `${t(p.ops![i - 1] === "+" ? "plus" : "minus")} ${n}` : String(n))).join(" ");
 
   const start = () => {
     const p = gen(lv);

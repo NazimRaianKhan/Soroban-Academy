@@ -72,5 +72,8 @@ src/data/levels.ts      lesson content (bilingual)
 - Quiz scores are reported by the browser. That is fine for learning, but not for competitions or certificates (later: server-generated questions).
 
 ## 9. Roadmap
-Stage 2: parent-child linking, school organizations and admin panel · Stage 3: Phase 2 content (borrowing, mixed, flash drills) ·
-Stage 4: multiplication, division, mental abacus · Stage 5: badges, charts, weak-spot detection, certificates · billing hooks (`profiles.plan` already exists).
+- Done: Levels 1-7 (digits, many-digit numbers, direct, friends of 5, friends of 10, carry/borrow across rods, mixed chains).
+- Next (decided): parent-child linking (child shares a code, parent enters it) and schools (platform admin creates schools and
+  assigns school admins; school admins manage teachers and classes).
+- Then: flash drills, multiplication, division, mental abacus, badges, charts, weak-spot detection, certificates,
+  billing hooks (`profiles.plan` already exists).

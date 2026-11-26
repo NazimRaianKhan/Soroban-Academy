@@ -13,7 +13,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .tab{flex:1;white-space:nowrap}.chip{padding:6px 12px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-top:12px}
 .sm{color:var(--mut);font-size:.9rem}.big{font-size:1.15rem}
-.big2{font-size:2.4rem;font-weight:700;text-align:center;margin:6px 0}
+.big2{font-size:clamp(1.3rem,6.5vw,2.4rem);font-weight:700;text-align:center;margin:6px 0}
 .fb{min-height:1.5em;text-align:center;font-weight:600}.fb.ok{color:var(--ok)}.fb.no{color:var(--acc)}
 .abw{overflow-x:auto;margin-top:12px}
 .ab{display:flex;flex-direction:column;align-items:center;background:var(--wood);border-radius:14px;padding:12px 18px;width:max-content;margin:0 auto;min-width:200px}

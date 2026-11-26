@@ -27,4 +27,27 @@ describe("problem generator", () => {
   it("level 5 always needs a carry or borrow", () => {
     for (let i = 0; i < 300; i++) { const p = gen(5); expect(hasCarryOrBorrow(p.a!, p.b!, p.op!)).toBe(true); }
   });
+
+  it("every calculation problem's answer matches its terms and never goes negative at any step", () => {
+    for (const lv of [3, 4, 5, 6, 7]) for (let i = 0; i < 300; i++) {
+      const p = gen(lv); let v = p.terms![0];
+      p.terms!.slice(1).forEach((n, k) => { v += p.ops![k] === "+" ? n : -n; expect(v).toBeGreaterThanOrEqual(0); });
+      expect(v).toBe(p.ans);
+    }
+  });
+  it("level 6 has 3-digit carries/borrows across 2+ rods, or borrows through zeros", () => {
+    for (let i = 0; i < 300; i++) {
+      const p = gen(6), [a, b] = p.terms!, op = p.ops![0];
+      const A = String(a).padStart(3, "0").split("").map(Number), B = String(b).padStart(3, "0").split("").map(Number);
+      const t = A.filter((d, j) => (op === "+" ? d + B[j] >= 10 : d < B[j])).length;
+      expect(t >= 2 || (op === "-" && a % 100 === 0 && b < 100)).toBe(true);
+    }
+  });
+  it("level 7 chains 3-5 numbers using both + and -", () => {
+    for (let i = 0; i < 300; i++) {
+      const p = gen(7);
+      expect(p.terms!.length).toBeGreaterThanOrEqual(3); expect(p.terms!.length).toBeLessThanOrEqual(5);
+      expect(p.ops).toContain("+"); expect(p.ops).toContain("-");
+    }
+  });
 });
