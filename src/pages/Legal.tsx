@@ -10,6 +10,7 @@ export default function Legal({ kind }: { kind: "privacy" | "terms" }) {
       {kind === "privacy" ? (
         <ul>
           <li>We store: your name, email or phone number, role, and your learning activity (attempts, times, levels passed).</li>
+          <li>If you sign in with Google, we receive only your name and email address from Google, and use them only to create and identify your account here. We never access your other Google data.</li>
           <li>Teachers can see activity of students who join their class. Nobody else can see your data.</li>
           <li>Camera mode processes video on your device only; video is never uploaded or stored.</li>
           <li>You can download or permanently delete your data any time from Account.</li>

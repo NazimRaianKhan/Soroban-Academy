@@ -19,8 +19,8 @@ Node.js 20 LTS (https://nodejs.org) and VS Code.
    - **Email**: enabled by default. Keep "Confirm email" ON.
    - **Google**: create an OAuth Client ID in Google Cloud Console (type *Web application*). Add the redirect URI shown in
      Supabase (`https://<project-ref>.supabase.co/auth/v1/callback`), then paste the Client ID and Secret into Supabase.
-   - **Phone**: enable it and connect an SMS provider (Twilio, MessageBird, Vonage…). SMS costs money per message and some
-     countries need sender registration. Check Bangladesh coverage and price with your provider before relying on it.
+   - **Phone (optional, paid)**: hidden by default. To use it, enable Phone in Supabase, connect an SMS provider (e.g. Twilio Verify),
+     then set `VITE_ENABLE_PHONE_LOGIN=true`. SMS costs money per message; check Bangladesh coverage and price first.
 5. **Authentication → URL Configuration**: Site URL = your Vercel URL; add Redirect URLs `http://localhost:5173/**` and `https://YOUR-APP.vercel.app/**`.
 
 ## 3. Run locally

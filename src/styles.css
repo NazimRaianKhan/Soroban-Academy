@@ -52,3 +52,4 @@ fieldset{border:1px solid var(--bd);border-radius:10px;margin:10px 0 0}legend{pa
 .mono{font-family:ui-monospace,Consolas,monospace;letter-spacing:.08em}
 .tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.95rem}th,td{padding:8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
 .danger{border-color:var(--acc);color:var(--acc)}hr{border:0;border-top:1px solid var(--bd);margin:14px 0}
+.intro{margin:10px 0 0}

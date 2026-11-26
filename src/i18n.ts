@@ -31,6 +31,7 @@ const en = {
   exportData: "Download my data", deleteAcct: "Delete my account", deleteWarn: "This permanently deletes your account and all progress.",
   typeDelete: "Type DELETE to confirm", cloudOff: "Accounts are not set up on this site yet. You can still learn as a guest.",
   loading: "Loading…", privacy: "Privacy Policy", terms: "Terms of Use", saved: "Saved ✓", role: "Role", plan: "Plan",
+  intro: "Soroban Academy teaches the Japanese abacus step by step, from first beads to mental calculation, with interactive lessons, practice, quizzes and progress tracking for children and adults. Free, in English and Bengali.",
   guestNote: "Guest progress is stored only on this device. Sign in to save it to your account.",
 };
 const bn: typeof en = {
@@ -63,6 +64,7 @@ const bn: typeof en = {
   exportData: "আমার ডেটা ডাউনলোড", deleteAcct: "আমার অ্যাকাউন্ট মুছুন", deleteWarn: "এটি আপনার অ্যাকাউন্ট ও সব অগ্রগতি স্থায়ীভাবে মুছে দেবে।",
   typeDelete: "নিশ্চিত করতে DELETE লিখুন", cloudOff: "এই সাইটে অ্যাকাউন্ট এখনো চালু হয়নি। অতিথি হিসেবে শিখতে পারেন।",
   loading: "লোড হচ্ছে…", privacy: "গোপনীয়তা নীতি", terms: "ব্যবহারের শর্ত", saved: "সংরক্ষিত ✓", role: "ভূমিকা", plan: "প্ল্যান",
+  intro: "সোরোবান একাডেমি জাপানি অ্যাবাকাস ধাপে ধাপে শেখায়, প্রথম পুঁতি থেকে মনে মনে হিসাব পর্যন্ত। ছোট-বড় সবার জন্য ইন্টারেক্টিভ পাঠ, অনুশীলন, কুইজ ও অগ্রগতি। বিনামূল্যে, ইংরেজি ও বাংলায়।",
   guestNote: "অতিথির অগ্রগতি শুধু এই ডিভাইসে থাকে। অ্যাকাউন্টে সংরক্ষণ করতে সাইন ইন করুন।",
 };
 

@@ -7,6 +7,7 @@ export default function Login() {
   const { t } = useApp();
   const a = useAuth();
   const nav = useNavigate();
+  const phoneOn = import.meta.env.VITE_ENABLE_PHONE_LOGIN === "true"; // off until an SMS provider is configured
   const [via, setVia] = useState<"email" | "phone">("email");
   const [email, setEmail] = useState(""), [pw, setPw] = useState("");
   const [phone, setPhone] = useState(""), [code, setCode] = useState(""), [sent, setSent] = useState(false);
@@ -35,11 +36,13 @@ export default function Login() {
       <h2>{t("signIn")}</h2>
       <button className="b wide" disabled={busy} onClick={() => run(a.signInGoogle)}>G&nbsp; {t("google")}</button>
       <div className="sep sm">{t("or")}</div>
-      <div className="tabs">
-        <button className={"tab " + (via === "email" ? "on" : "")} onClick={() => setVia("email")}>{t("viaEmail")}</button>
-        <button className={"tab " + (via === "phone" ? "on" : "")} onClick={() => setVia("phone")}>{t("viaPhone")}</button>
-      </div>
-      {via === "email" ? (
+      {phoneOn && (
+        <div className="tabs">
+          <button className={"tab " + (via === "email" ? "on" : "")} onClick={() => setVia("email")}>{t("viaEmail")}</button>
+          <button className={"tab " + (via === "phone" ? "on" : "")} onClick={() => setVia("phone")}>{t("viaPhone")}</button>
+        </div>
+      )}
+      {via === "email" || !phoneOn ? (
         <form onSubmit={submitEmail}>
           <label>{t("email")}<input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></label>
           <label>{t("password")}<input type="password" autoComplete="current-password" required value={pw} onChange={(e) => setPw(e.target.value)} /></label>

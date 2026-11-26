@@ -33,6 +33,7 @@ export default function Academy() {
 
   return (
     <>
+      {isGuest && <p className="sm intro">{t("intro")}</p>}
       {isGuest && cloud && <div className="info sm">{t("guestNote")}</div>}
       <div className="tabs">
         {MODES.map((m) => <button key={m} className={"tab " + (mode === m ? "on" : "")} onClick={() => setMode(m)}>{t(m)}</button>)}
