@@ -5,7 +5,7 @@ import { gen, type Problem } from "../lib/problems";
 
 type Props = {
   lv: number; quiz: boolean; value: number; resetRods: () => void;
-  onRecord: (lv: number, ok: boolean, ms: number) => void;
+  onRecord: (lv: number, ok: boolean, ms: number, kind: "practice" | "quiz") => void;
   onPass: (lv: number, score: number) => void;
 };
 
@@ -34,13 +34,13 @@ export function Session({ lv, quiz, value, resetRods, onRecord, onPass }: Props)
   const check = () => {
     if (!q) return;
     const ok = value === q.ans;
-    if (first.current) { first.current = false; onRecord(lv, ok, Date.now() - t0.current); }
+    if (first.current) { first.current = false; onRecord(lv, ok, Date.now() - t0.current, quiz ? "quiz" : "practice"); }
     if (ok || quiz) { setLocked(true); t1.current = Date.now(); }
     if (quiz && ok) setQs((s) => s && { ...s, ok: s.ok + 1 });
     const m = ok ? t("ok") : quiz ? `${t("no2")} ${q.ans}` : t("no");
     setFb({ c: ok ? "ok" : "no", m }); speak(m);
   };
-  const skip = () => { if (!locked && first.current) { first.current = false; onRecord(lv, false, 0); } start(); };
+  const skip = () => { if (!locked && first.current) { first.current = false; onRecord(lv, false, 0, "practice"); } start(); };
   const startQuiz = () => { setQs({ i: 0, ok: 0 }); start(); };
   const nextQ = () => {
     if (!qs) return;

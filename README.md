@@ -1,68 +1,76 @@
 # 🧮 Soroban Academy
 
-Interactive soroban (1 upper + 4 lower beads) learning app: lessons, practice, quizzes, progress tracking,
-English/Bengali, audio, and optional camera hand control.
+Interactive soroban (1 upper + 4 lower beads) learning platform: accounts (email, Google, phone OTP), roles
+(student, parent, teacher, admin), classes with a teacher dashboard, cloud-saved progress, English/Bengali,
+audio, and optional camera hand control.
 
-**Stack:** Vite + React 18 + TypeScript · MediaPipe Tasks Vision (hand tracking) · Web Speech API (audio) · localStorage (progress).
-No backend, no database, no API keys. Everything runs in the browser.
+**Stack:** Vite + React 18 + TypeScript + React Router · **Supabase** (PostgreSQL, Auth, Row-Level Security) ·
+MediaPipe (hand tracking) · Web Speech API (audio) · Vitest + GitHub Actions CI · Vercel hosting.
+Without Supabase keys the app still runs in **guest mode** (progress in localStorage).
 
 ## 1. Install the tools (once)
-1. Install **Node.js 20 LTS** from https://nodejs.org (check: `node -v`).
-2. Install **VS Code** from https://code.visualstudio.com.
-3. Optional VS Code extensions: *ESLint*, *Prettier*, *ES7+ React snippets*.
+Node.js 20 LTS (https://nodejs.org) and VS Code.
 
-## 2. Run the project
-Open this folder in VS Code (`File → Open Folder`), then open the terminal (`Ctrl+` ` ` `) and run:
+## 2. Create the backend (Supabase, free tier is enough to start)
+1. Create an account and a **New project** at https://supabase.com. Save the database password.
+2. **SQL Editor → New query**: paste the whole of `supabase/migrations/0001_init.sql` → **Run**.
+3. **Project Settings → API**: copy the **Project URL** and the **anon public key**.
+4. **Authentication → Providers**:
+   - **Email**: enabled by default. Keep "Confirm email" ON.
+   - **Google**: create an OAuth Client ID in Google Cloud Console (type *Web application*). Add the redirect URI shown in
+     Supabase (`https://<project-ref>.supabase.co/auth/v1/callback`), then paste the Client ID and Secret into Supabase.
+   - **Phone**: enable it and connect an SMS provider (Twilio, MessageBird, Vonage…). SMS costs money per message and some
+     countries need sender registration. Check Bangladesh coverage and price with your provider before relying on it.
+5. **Authentication → URL Configuration**: Site URL = your Vercel URL; add Redirect URLs `http://localhost:5173/**` and `https://YOUR-APP.vercel.app/**`.
 
+## 3. Run locally
 ```bash
-npm install      # installs packages AND downloads the hand-tracking files (needs internet once)
-npm run dev      # starts the app at http://localhost:5173
+cp .env.example .env.local     # then paste your Supabase URL + anon key into .env.local
+npm install                    # also downloads the hand-tracking model (internet needed once)
+npm run dev                    # http://localhost:5173
+npm test                       # unit tests
 ```
 
-Camera mode works on `localhost` and on any `https://` site (browsers block cameras on plain http).
+## 4. Deploy (Vercel)
+Push to GitHub, import the repo in Vercel. Under **Settings → Environment Variables** add `VITE_SUPABASE_URL` and
+`VITE_SUPABASE_ANON_KEY`, then redeploy. `vercel.json` already handles page routing and security headers.
+(The anon key is meant to be public; the database is protected by Row-Level Security, not by hiding the key.
+Never put the `service_role` key in this project.)
 
-If the hand model download failed during install, run `npm run setup:hand` again, or download
-`hand_landmarker.task` manually (the URL is printed) into `public/models/`.
+## 5. Roles
+| Role | How obtained | Can do |
+|---|---|---|
+| student | self sign-up | learn, join classes, see own data |
+| teacher | self sign-up | create classes, see progress of students in their classes |
+| parent | self sign-up | (child linking arrives in Stage 2) |
+| school_admin / platform_admin | **manual only** | make yourself admin in the SQL editor: `update public.profiles set role='platform_admin' where id = '<your user id>';` |
 
-## 3. Folder map
+Roles can never be changed from the browser: the database blocks it (column-level privileges), and elevated
+roles in sign-up data are ignored.
+
+## 6. Security tests
+`supabase/tests/security.sql` attacks the database as different users (self-promotion, reading other people's data,
+anonymous access, cheating inserts, account deletion). To run it on a local Postgres: load `local_stub.sql`, then the
+migration, then `security.sql`.
+
+## 7. Folder map
 ```
-src/
-  App.tsx                 app shell: tabs, levels, language, audio, camera toggle, progress
-  i18n.ts                 all English + Bengali UI text
-  ctx.ts                  shared context (t, tx, speak)
-  data/levels.ts          lesson steps for every level (bilingual)
-  lib/abacus.ts           pure abacus rules (bead tapping, rod values)
-  lib/problems.ts         problem generator for each level
-  lib/storage.ts          progress, accuracy, time, streak (localStorage)
-  lib/speech.ts           text-to-speech
-  components/             Abacus, Learn, Session (practice + quiz), Progress
-  hand/useHand.ts         MediaPipe hand tracking + pinch-to-click
-  hand/HandPanel.tsx      camera preview, cursor, status
-scripts/setup-hand.mjs    copies WASM + downloads the hand model into /public
+supabase/migrations/    database schema + row-level security + RPC functions
+supabase/tests/         security test script
+src/auth/               AuthProvider (email, Google, phone OTP, reset, profile)
+src/pages/              Academy (learning), Login, Register, Reset, Onboarding, Classes, ClassDetail, Account, Legal
+src/components/         Abacus, Learn, Session, Progress, Layout
+src/lib/                abacus rules, problem generator, progress hook (guest local vs cloud), speech
+src/hand/               camera hand control
+src/data/levels.ts      lesson content (bilingual)
+.github/workflows/      CI: tests + build on every push
 ```
 
-## 4. How camera hand control is wired in
-- `Abacus.tsx` puts `data-r` / `data-k` on every bead and calls one `onTap` function for clicks.
-- `useHand.ts` tracks your hand, maps the midpoint of thumb and index finger onto the abacus area, and
-  when you **pinch**, it clicks the nearest bead. So mouse, touch and hand all use the same logic and
-  the lessons/quizzes work unchanged.
-- Video is processed locally and never uploaded.
-- Tips: good light, hand about 40–60 cm from the camera, pinch slowly and release between moves.
+## 8. Before a public launch (needs a human, not code)
+- Replace the placeholder Privacy Policy and Terms (`src/pages/Legal.tsx`) with lawyer-reviewed text; children's data brings COPPA/GDPR duties.
+- Turn on Supabase backups, add Sentry (or similar) error monitoring, and use a custom SMTP sender for auth emails.
+- Quiz scores are reported by the browser. That is fine for learning, but not for competitions or certificates (later: server-generated questions).
 
-## 5. Add or change content
-- **Text/translations:** edit `src/i18n.ts` and `src/data/levels.ts`.
-- **New level (e.g. Level 6 borrowing):** add an entry to `LEVELS` in `data/levels.ts`, then add a
-  branch for it in `gen()` in `lib/problems.ts`. Tabs, locking, quiz and progress update automatically.
-- **Pass mark:** `Session.tsx` (search `>= 4`).
-
-## 6. Build and publish
-```bash
-npm run build     # outputs /dist
-npm run preview   # test the production build locally
-```
-Upload `dist/` to Netlify, Vercel or GitHub Pages (all provide HTTPS, which camera mode needs).
-For GitHub Pages in a sub-folder set `base: "/repo-name/"` in `vite.config.ts`.
-
-## Roadmap
-Phase 2: borrowing + mixed problems + flash drills · Phase 3: multiplication, division, mental abacus ·
-extras: weak-spot detection, charts, badges, installable offline app (PWA).
+## 9. Roadmap
+Stage 2: parent-child linking, school organizations and admin panel · Stage 3: Phase 2 content (borrowing, mixed, flash drills) ·
+Stage 4: multiplication, division, mental abacus · Stage 5: badges, charts, weak-spot detection, certificates · billing hooks (`profiles.plan` already exists).

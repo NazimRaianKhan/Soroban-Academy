@@ -3,7 +3,7 @@ import { useApp } from "../ctx";
 import { LEVELS } from "../data/levels";
 import { streak, type Progress as P } from "../lib/storage";
 
-export function Progress({ prog, onReset }: { prog: P; onReset: () => void }) {
+export function Progress({ prog, onReset, canReset }: { prog: P; onReset: () => void; canReset: boolean }) {
   const { t, tx } = useApp();
   const [sure, setSure] = useState(false);
   const acc = prog.att ? Math.round((prog.ok / prog.att) * 100) : 0;
@@ -27,10 +27,10 @@ export function Progress({ prog, onReset }: { prog: P; onReset: () => void }) {
           </div>
         );
       })}
-      <div className="row"><span />
+      {canReset && <div className="row"><span />
         <button className="b" onClick={() => { if (sure) { onReset(); setSure(false); } else setSure(true); }}>
           {sure ? t("sure") : t("reset")}
-        </button></div>
+        </button></div>}
     </>
   );
 }
